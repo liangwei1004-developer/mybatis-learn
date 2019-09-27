@@ -71,11 +71,17 @@ public class Reflector {
 
   public Reflector(Class<?> clazz) {
     type = clazz;
+    //添加构造方法
     addDefaultConstructor(clazz);
+    //属性和属性方法添加到getMethods，属性和get方法的返回值类型添加到getTypes中
     addGetMethods(clazz);
+    //属性和属性方法的invoker对象添加到setMethods中，属性和set方法的入参类型添加到setTypes中
     addSetMethods(clazz);
+    //是addGetMethods和addSetMethods的补充，因为有些fields不包含get和set属性
     addFields(clazz);
+    // 可读属性集合
     readablePropertyNames = getMethods.keySet().toArray(new String[0]);
+    // 可写属性集合
     writablePropertyNames = setMethods.keySet().toArray(new String[0]);
     for (String propName : readablePropertyNames) {
       caseInsensitivePropertyMap.put(propName.toUpperCase(Locale.ENGLISH), propName);
@@ -94,10 +100,14 @@ public class Reflector {
   }
 
   private void addGetMethods(Class<?> clazz) {
+    //属性与其getting方法映射
     Map<String, List<Method>> conflictingGetters = new HashMap<>();
+    //获取到当前类以及付类中生命的所有方法包括private方法
     Method[] methods = getClassMethods(clazz);
+    //遍历所有方法获取到方法的形参为0且以get开头的所有方法，添加到conflictingGetters
     Arrays.stream(methods).filter(m -> m.getParameterTypes().length == 0 && PropertyNamer.isGetter(m.getName()))
       .forEach(m -> addMethodConflict(conflictingGetters, PropertyNamer.methodToProperty(m.getName()), m));
+    //解决getting冲突方法，一个实例中含有getXX()和isXX()方法则两处方法冲突，如果属性类型不是bool类型则抛出属性ambiguous异常，如果是bool则is胜出
     resolveGetterConflicts(conflictingGetters);
   }
 
@@ -282,6 +292,12 @@ public class Reflector {
    * @param clazz The class
    * @return An array containing all methods in this class
    */
+  /*
+  * 这个方法返回一个包含在当前类以及付类中声明的所有方法的数组
+  * 我们使用这个方法，而不是简单的class.getMethods 因为我们也希望获取到private方法
+  *
+  *
+  * */
   private Method[] getClassMethods(Class<?> clazz) {
     Map<String, Method> uniqueMethods = new HashMap<>();
     Class<?> currentClass = clazz;

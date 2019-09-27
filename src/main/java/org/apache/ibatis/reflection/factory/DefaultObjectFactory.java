@@ -89,6 +89,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     }
   }
 
+  /*resolveInterface: 根据传入的类类型返回对应的类型实例*/
   protected Class<?> resolveInterface(Class<?> type) {
     Class<?> classToCreate;
     if (type == List.class || type == Collection.class || type == Iterable.class) {

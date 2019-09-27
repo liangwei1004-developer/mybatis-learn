@@ -54,6 +54,10 @@ public class TypeParameterResolver {
    * @return The parameter types of the method as an array of {@link Type}s. If they have type parameters in the declaration,<br>
    *         they will be resolved to the actual runtime {@link Type}s.
    */
+  /*
+  * resolveParamTypes: 方法的参数类型是Type的数组，如果在声明中具有类型参数，他们将会在运行时被实际的解析出来
+  *
+  * */
   public static Type[] resolveParamTypes(Method method, Type srcType) {
     Type[] paramTypes = method.getGenericParameterTypes();
     Class<?> declaringClass = method.getDeclaringClass();

@@ -52,8 +52,9 @@ class DefaultObjectFactoryTest {
   void createClassThrowsProperErrorMsg() {
     DefaultObjectFactory defaultObjectFactory = new DefaultObjectFactory();
     try {
-      defaultObjectFactory.create(TestClass.class, Collections.singletonList(String.class), Collections.singletonList("foo"));
+      TestClass foo = defaultObjectFactory.create(TestClass.class, Collections.singletonList(String.class), Collections.singletonList("foo"));
       Assertions.fail("Should have thrown ReflectionException");
+//      Assertions.assertEquals("foo",foo.myString);
     } catch (Exception e) {
       Assertions.assertTrue(e instanceof ReflectionException, "Should be ReflectionException");
       Assertions.assertTrue(e.getMessage().contains("(String)"), "Should not have trailing commas in types list");
